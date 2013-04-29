@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "player.h"
+#include "tags.h"
 
 int main(int argc, char *argv[]){
 
-  init();
    if (argc != 2) {
     fprintf(stderr, "Usage: ./madtest mp3file\n");
     return 1;
@@ -35,6 +35,9 @@ int main(int argc, char *argv[]){
     return 1;
   }
 
+  read_tag(fd, data, s.st_size);
+ 
+  bt_init();
   mad_decode(data, s.st_size);
 
   munmap(data, s.st_size);

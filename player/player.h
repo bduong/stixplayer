@@ -7,6 +7,6 @@
 #include <alsa/asoundlib.h>
 
 
-int init();
+int bt_init();
 int close_handle();
 void mad_decode(unsigned char *, unsigned long);
