@@ -91,7 +91,7 @@ void * receiveInfo(void * arg) {
 
   //      ticks = time(NULL);
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
-        read(connfd, sendBuff, strlen(sendBuff)); 
+        read(connfd, sendBuff, 1024); 
         printf("Got Packet: %s\n", sendBuff);
 
         close(connfd);

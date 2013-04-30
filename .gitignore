@@ -16,3 +16,4 @@
 *.out
 *.app
 player/player
+player/network
