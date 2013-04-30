@@ -8,13 +8,20 @@ LDIR =../lib
 DEPS = player.h tags.h
 OBJ = player.o tags.o main.o
 
+default: play
+
+all: play network
+
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) 
 
 play: $(OBJ) $(DEPS)
 	$(CC) $(OPTS) -o player $^ $(CFLAGS) $(LDFLAGS)
+	
+network: 
+	$(CC) transceiver.c -o network -lpthread
 
-.PHONY: clean
+.PHONY: clean network play
 
 clean:
-	rm -f $(IDIR)/*.o $(IDIR)/*~ $(IDIR)core $(IDIR)/player
+	rm -f $(IDIR)/*.o $(IDIR)/*~ $(IDIR)core $(IDIR)/player $(IDIR)/network
