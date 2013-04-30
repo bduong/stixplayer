@@ -15,11 +15,6 @@
 
 snd_pcm_t *handle;
 
-typedef struct buffer_s {
-  unsigned char *buf;
-  unsigned long len;
-} buffer_t;
-
 static inline signed int scale(mad_fixed_t sample)
 {
   /* round */
@@ -107,12 +102,38 @@ static enum mad_flow mad_error(void *data,
   
 }
 
-void mad_decode(unsigned char *data, unsigned long size) {
+void *mad_decode(void * pthread_data) {
+  decode_thread_data_t *decode_thread_data = (decode_thread_data_t*)pthread_data;
   struct mad_decoder decoder;
   buffer_t buffer;
+  unsigned char *data;
+
+  struct stat s;
+  int ret = stat(decode_thread_data->filename, &s);
+  if (ret < 0) {
+    perror("Could not stat");
+    goto decode_exit;
+  }
+
+  int fd = open(decode_thread_data->filename, O_RDONLY);
+  if (fd < 0) {
+    perror("file open failed");
+    goto decode_exit;
+  }
+
+  data = mmap(NULL, s.st_size, PROT_READ, MAP_PRIVATE|MAP_FILE, fd, 0);
+  if ((int)data == -1) {
+    perror("mmap failed");
+    close(fd);
+    goto decode_exit;
+  }
 
   buffer.buf = data;
-  buffer.len = size;
+  buffer.len = s.st_size;
+
+  read_tag(fd, data, s.st_size);
+ 
+  bt_init();
 
   mad_decoder_init(&decoder, &buffer,
                    mad_input,
@@ -125,6 +146,12 @@ void mad_decode(unsigned char *data, unsigned long size) {
 
   mad_decoder_run(&decoder, MAD_DECODER_MODE_SYNC);
   mad_decoder_finish(&decoder);
+
+decode_exit:
+  munmap(data, s.st_size);
+  close(fd);
+  close_handle();
+  pthread_exit(NULL);
 }
 
 int bt_init()
