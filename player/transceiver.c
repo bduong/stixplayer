@@ -11,12 +11,15 @@
 #include <pthread.h>
 #include "transceiver.h"
 #include "player.h"
+#include "tags.h"
 
 #define RECEIVE_PORT 5001
 #define TRANSMIT_PORT 5000
 
 int pause_play_flag;
 int stop_flag;
+char * song_title;
+char * artist;
 
 int main(int argc, char *argv[])
 {
@@ -57,8 +60,9 @@ void * sendInfo(void * arg) {
     {
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
 
-        ticks = time(NULL);
-        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
+//        ticks = time(NULL);
+//        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
+		snprintf(sendBuff, sizeof(sendBuff), "%s\n%s\n", song_title, artist); 		
         write(connfd, sendBuff, strlen(sendBuff)); 
         printf("Sent packet\n");
 
