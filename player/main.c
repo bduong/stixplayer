@@ -12,6 +12,8 @@ int pause_play_flag;
 int stop_flag;
 char * songs[20];
 int number_of_songs;
+int break_input_loop;
+int song_choice;
 
 int main(int argc, char* argv[])
 {
@@ -28,14 +30,15 @@ int main(int argc, char* argv[])
     {
     			getMP3Files(argv[1]);
 				pause_play_flag = PAUSE;
-				stop_flag = 0;
+				stop_flag = RUN;
 //                decode_thread_data_p->data = NULL;
 				pthread_create(&listener_t, NULL, receiveInfo,(void *) &run);
 				pthread_create(&id3_t, NULL, sendInfo,(void *) &run);
-   				int choice = 0;
+   				song_choice = 0;
                 printf("Press q to quit\n");
 				while (1)
 				{
+					break_input_loop = 0;
 					stop_flag = 0;
 					printf("Press p to play\n");
 					while (pause_play_flag == PAUSE) {
@@ -54,9 +57,9 @@ int main(int argc, char* argv[])
 //              	  decode_thread_data_p->fp = 0;
 					char buffer[50];
 					if (argv[1][strlen(argv[1]) - 1] == '/') { 
-						sprintf(buffer, "%s%s", argv[1], songs[choice]);
+						sprintf(buffer, "%s%s", argv[1], songs[song_choice]);
 					} else {
-						sprintf(buffer, "%s/%s", argv[1], songs[choice]);				
+						sprintf(buffer, "%s/%s", argv[1], songs[song_choice]);				
 					}
 					printf("%s\n", buffer);
 
@@ -67,14 +70,14 @@ int main(int argc, char* argv[])
                         fprintf(stderr, "Error creating decode thread!\n");
                         return 1;
 					}
-
                 /* main loop */
-                while (1)
+                while (stop_flag == RUN)
                 {
-                        int res = fgetc(stdin);
+                		printf("%d\n", stop_flag);
+                		sleep(1);
+/*                        int res = fgetc(stdin);
                         if ((res == EOF) || (res == 0x71))
                         {
-                                /* perform clean-up */
                                 pthread_cancel(decode_thread_t);
 								free(decode_thread_data_p);
 								return;
@@ -102,6 +105,7 @@ int main(int argc, char* argv[])
 							pause_play_flag = PAUSE;
 							break;
 						}
+						*/
                 }
                 
                 printf( "waiting for Decode thread to exit...\n");

@@ -12,6 +12,7 @@
 #include "transceiver.h"
 #include "player.h"
 #include "tags.h"
+#include "playlist.h"
 
 #define RECEIVE_PORT 5001
 #define TRANSMIT_PORT 5000
@@ -22,6 +23,8 @@ char song_title[40];
 char song_artist[40];
 char ** playlist;
 int playlist_length;
+int song_choice;
+int number_of_songs;
 /*
 int main(int argc, char *argv[])
 {
@@ -103,6 +106,16 @@ void * receiveInfo(void * arg) {
         read(connfd, sendBuff, 1024); 
         if (strncmp(sendBuff, "Pause", 5) == 0) {
         	pause_play_flag = !pause_play_flag;
+        } else if (strncmp(sendBuff, "Next", 4) == 0) {
+	        printf("Go Next\n");
+        	 stop_flag = STOP;
+        	 pause_play_flag = PLAY;
+        	 song_choice = (song_choice + 1) % number_of_songs;
+        } else if (strncmp(sendBuff, "Back", 4) == 0) {
+        	printf("Go Back\n");
+        	stop_flag = STOP;
+        	pause_play_flag = PLAY;
+        	song_choice = (song_choice <= 0) ? number_of_songs - 1 : song_choice -1;        	
         }
         printf("Got Packet: %s\n", sendBuff);
 

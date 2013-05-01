@@ -62,9 +62,9 @@ static enum mad_flow mad_output(void *data,
         while (nsamples--)
         { 
  /* output sample(s) in 16-bit signed little-endian PCM */
-				if (stop_flag)
+				if (stop_flag == STOP)
 				{
-					stop_flag = 0;
+//					stop_flag = RUN;
 					return MAD_FLOW_STOP;
 				}
                 while(pause_play_flag == PAUSE){}
