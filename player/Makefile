@@ -18,10 +18,11 @@ all: play network
 play: $(OBJ) $(DEPS)
 	$(CC) $(OPTS) -o player $^ $(CFLAGS) $(LDFLAGS)
 	
-network: 
-	$(CC) transceiver.c -o network -lpthread
+network: transceiver.h
+	$(CC) transceiver.c -o network -lpthread -I$(IDIR)
 
 .PHONY: clean network play
 
 clean:
 	rm -f $(IDIR)/*.o $(IDIR)/*~ $(IDIR)core $(IDIR)/player $(IDIR)/network
+

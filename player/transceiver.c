@@ -9,12 +9,10 @@
 #include <sys/types.h>
 #include <time.h> 
 #include <pthread.h>
-
+#include <transceiver.h>
 #define RECEIVE_PORT 5001
 #define TRANSMIT_PORT 5000
 
-void * sendInfo(void *);
-void * receiveInfo(void *);
 
 int main(int argc, char *argv[])
 {
