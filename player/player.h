@@ -6,6 +6,9 @@
 #include <mad.h>
 #include <alsa/asoundlib.h>
 
+extern int pause_play_flag;
+extern int stop_flag;
+
 typedef struct {
 //        int fp;
         char* filename;
@@ -20,3 +23,5 @@ typedef struct buffer_s {
 int bt_init();
 int close_handle();
 void *mad_decode(void * pthread_data);
+
+

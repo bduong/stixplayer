@@ -14,6 +14,7 @@
 #define ALSA_PCM_NEW_HW_PARAMS_API
 
 snd_pcm_t *handle;
+int pause_play_flag;
 
 static inline signed int scale(mad_fixed_t sample)
 {
@@ -33,7 +34,7 @@ static inline signed int scale(mad_fixed_t sample)
 static enum mad_flow mad_input(void *data,
                                struct mad_stream *stream) {
   buffer_t *buffer = data;
-  if (!buffer->len)
+  if (!buffer->len&&pause_play_flag)
     return MAD_FLOW_STOP;
   mad_stream_buffer(stream, buffer->buf, buffer->len);
   buffer->len = 0;
@@ -58,9 +59,10 @@ static enum mad_flow mad_output(void *data,
         right_ch  = pcm->samples[1];
   
         while (nsamples--)
-        {
-                /* output sample(s) in 16-bit signed little-endian PCM */
-                sample = scale(*left_ch++);
+        { 
+ /* output sample(s) in 16-bit signed little-endian PCM */
+                while(pause_play_flag){}
+				sample = scale(*left_ch++);
                 _buf[0] = (sample >> 0) & 0xff;
                 _buf[1] = (sample >> 8) & 0xff;
                 sample = scale(*right_ch++);
@@ -83,7 +85,7 @@ static enum mad_flow mad_output(void *data,
                         fprintf(stderr, "short write, write %d frames\n", rc);
                 }
         }
-        
+			
         return MAD_FLOW_CONTINUE;
 }
 

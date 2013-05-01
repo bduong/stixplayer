@@ -5,9 +5,12 @@
 #include "player.h"
 #include "tags.h"
 
+int pause_play_flag;
+
 int main(int argc, char* argv[])
 {
     pthread_t decode_thread_t;
+	
     
     void* decode_thread_exit_p;
     
@@ -18,6 +21,8 @@ int main(int argc, char* argv[])
     
 //                decode_thread_data_p->fp = 0;
                 decode_thread_data_p->filename = argv[1];
+				pause_play_flag = 0;
+//				stop_flag = 0;
 //                decode_thread_data_p->data = NULL;
 
                 printf("Press q to quit");
@@ -39,6 +44,11 @@ int main(int argc, char* argv[])
                                 pthread_cancel(decode_thread_t);
                                 break;
                         }
+						if (res == 0x70)
+						{
+							pause_play_flag = !pause_play_flag;
+							printf("pause/play\n");
+						}
                 }
                 
                 printf( "waiting for Decode thread to exit...\n");
