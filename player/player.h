@@ -6,6 +6,9 @@
 #include <mad.h>
 #include <alsa/asoundlib.h>
 
+#define PAUSE 0
+#define PLAY 1
+
 extern int pause_play_flag;
 extern int stop_flag;
 

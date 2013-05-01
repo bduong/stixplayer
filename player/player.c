@@ -35,11 +35,11 @@ static inline signed int scale(mad_fixed_t sample)
 static enum mad_flow mad_input(void *data,
                                struct mad_stream *stream) {
   buffer_t *buffer = data;
-  if (!buffer->len&&pause_play_flag)
+  if (!buffer->len&& (pause_play_flag== PAUSE))
     return MAD_FLOW_STOP;
   mad_stream_buffer(stream, buffer->buf, buffer->len);
   buffer->len = 0;
-  return MAD_FLOW_CONTINUE;
+  return (stop_flag) ? MAD_FLOW_STOP : MAD_FLOW_CONTINUE;
 }
 
 static enum mad_flow mad_output(void *data,
@@ -67,7 +67,7 @@ static enum mad_flow mad_output(void *data,
 					stop_flag = 0;
 					return MAD_FLOW_STOP;
 				}
-                while(pause_play_flag){}
+                while(pause_play_flag == PAUSE){}
 				sample = scale(*left_ch++);
                 _buf[0] = (sample >> 0) & 0xff;
                 _buf[1] = (sample >> 8) & 0xff;
@@ -92,7 +92,7 @@ static enum mad_flow mad_output(void *data,
                 }
         }
 			
-        return MAD_FLOW_CONTINUE;
+        return (stop_flag) ? MAD_FLOW_STOP : MAD_FLOW_CONTINUE;
 }
 
 static enum mad_flow mad_error(void *data,

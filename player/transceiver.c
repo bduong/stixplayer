@@ -139,7 +139,7 @@ void * sendPlaylist(void * arg) {
 //        ticks = time(NULL);
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
 		for (i = 0; i < playlist_length; i++) {
-			snprintf(sendBuff, sizeof(sendBuff), "%s\r\n", playlist[i[); 
+			snprintf(sendBuff, sizeof(sendBuff), "%s\r\n", playlist[i]); 
 		
         	write(connfd, sendBuff, strlen(sendBuff)); 
         }

@@ -26,21 +26,24 @@ int main(int argc, char* argv[])
     
 //                decode_thread_data_p->fp = 0;
                 decode_thread_data_p->filename = argv[1];
-				pause_play_flag = 0;
+				pause_play_flag = PAUSE;
 				stop_flag = 0;
 //                decode_thread_data_p->data = NULL;
 				pthread_create(&listener_t, NULL, receiveInfo,(void *) &run);
 				pthread_create(&id3_t, NULL, sendInfo,(void *) &run);
 
-                printf("Press q to quit");
+                printf("Press q to quit\n");
 				while (1)
 				{
-					printf("Press p to play");
-					while (1) {
-						int res = fgetc(stdin);
+					stop_flag = 0;
+					printf("Press p to play\n");
+					while (pause_play_flag == PAUSE) {
+						printf("%d\n", pause_play_flag);
+						sleep(1);
+/*						int res = fgetc(stdin);
 						if (res == 0x70) {
 							break;
-						}
+						}*/
 					}
 					/* init of decode thread */
 					if (pthread_create(&decode_thread_t,NULL,mad_decode,decode_thread_data_p) != 0)
@@ -67,6 +70,7 @@ int main(int argc, char* argv[])
 						if (res == 0x73)
 						{
 							stop_flag = 1;
+							pause_play_flag = PAUSE;
 							break;
 						}
                 }
@@ -75,7 +79,7 @@ int main(int argc, char* argv[])
                 pthread_join(decode_thread_t, &decode_thread_exit_p);
                 if (decode_thread_exit_p != PTHREAD_CANCELED)
                 {
-                        //printf("Decode return value: %x\n", pDecodeThreadExit);
+                        printf("Decode return value:\n");
                 }
                 else
                 {
