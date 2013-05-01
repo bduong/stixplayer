@@ -11,7 +11,9 @@ public class PlayerControl extends Activity {
     private TextView artist;
     public static final int RECEIVE_SOCKET_PORT = 5000;
     public static final int TRANSMIT_SOCKET_PORT =5001;
+    public static final int PLAYLIST_SOCKET_PORT = 5002;
     public static final String GUMSTIX_IP= "192.168.0.4";
+    public Activity thisActivity;
 
 
     /**
@@ -19,11 +21,20 @@ public class PlayerControl extends Activity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        thisActivity = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
         songTitle = (TextView) findViewById(R.id.SongTitle);
         artist = (TextView) findViewById(R.id.artist);
+
+        final Button refresh = (Button) findViewById(R.id.refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new ReceiverThread(songTitle, artist).start();
+            }
+        });
 
         final Button backButton = (Button) findViewById(R.id.back);
         backButton.setOnClickListener(new SendingClickListener("Back"));
@@ -44,15 +55,9 @@ public class PlayerControl extends Activity {
         playlistbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ReceiverThread(songTitle, artist ).start();
-//                new GetPlaylistThread(layout, getParent()).start();
+                new GetPlaylistThread(layout, thisActivity).start();
             }
         });
-
-        Button hello = new Button(this);
-        hello.setText("Hello");
-        layout.addView(hello);
-
     }
 
     public class SendingClickListener implements View.OnClickListener {

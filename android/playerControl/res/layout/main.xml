@@ -14,9 +14,14 @@
             android:layout_height="wrap_content"
             android:text="Artist"
             android:id="@+id/artist" android:layout_gravity="left|center_vertical"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Refresh"
+            android:id="@+id/refresh" android:layout_gravity="left|center_vertical"/>
     <View
             android:layout_width="fill_parent"
-            android:layout_height="100dp">
+            android:layout_height="60dp">
     </View>
     <LinearLayout
             android:orientation="horizontal"
@@ -50,7 +55,7 @@
     <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Get Playlist"
+            android:text="Refresh Playlist"
             android:id="@+id/playlist"/>
     <ScrollView
             android:layout_width="fill_parent"
