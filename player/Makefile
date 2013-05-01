@@ -5,8 +5,8 @@ CFLAGS=-I$(IDIR)
 LDFLAGS=-L$(IDIR)
 OPTS =-lm -lmad -lasound -lid3tag
 LDIR =../lib
-DEPS = player.h tags.h transceiver.h
-OBJ = player.o tags.o main.o transceiver.o
+DEPS = player.h tags.h transceiver.h playlist.h
+OBJ = player.o tags.o main.o transceiver.o playlist.o
 
 default: play
 

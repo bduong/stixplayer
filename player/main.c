@@ -6,16 +6,19 @@
 #include "transceiver.h"
 #include "player.h"
 #include "tags.h"
+#include "playlist.h"
 
 int pause_play_flag;
 int stop_flag;
+char * songs[20];
+int number_of_songs;
 
 int main(int argc, char* argv[])
 {
     pthread_t decode_thread_t, listener_t, id3_t;
 	int run = 1;
 	int runOuter = 1;
-	
+	int i;
     
     void* decode_thread_exit_p;
     
@@ -23,9 +26,22 @@ int main(int argc, char* argv[])
     
     if (argc > 1)
     {
-    
+    			getMP3Files(argv[1]);
+   				printf("Select song\n");
+    			for (i = 0; i < number_of_songs; i++) {
+    				printf("%d %s\n", i, songs[i]);
+    			}
+    			int choice;
+    			int result = scanf("%d", &choice);
 //                decode_thread_data_p->fp = 0;
-                decode_thread_data_p->filename = argv[1];
+				char buffer[50];
+				if (argv[1][strlen(argv[1]) - 1] == '/') { 
+					sprintf(buffer, "%s%s", argv[1], songs[choice]);
+				} else {
+					sprintf(buffer, "%s/%s", argv[1], songs[choice]);				
+				}
+				printf("%s\n", buffer);
+                decode_thread_data_p->filename = buffer;//argv[1];
 				pause_play_flag = PAUSE;
 				stop_flag = 0;
 //                decode_thread_data_p->data = NULL;
@@ -93,6 +109,9 @@ int main(int argc, char* argv[])
         }       
         
         free(decode_thread_data_p);
+        for (i = 0; i < number_of_songs; i++ ) {
+        	free(songs[i]);
+        }
         
     return 0;
 }
