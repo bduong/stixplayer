@@ -120,6 +120,13 @@ void * receiveInfo(void * arg) {
         } else if (strncmp(sendBuff, "Stop", 4) == 0) {
         	stop_flag = STOP;
   	        pause_play_flag = PAUSE;        	
+        } else if (strncmp(sendBuff, "Play", 4) == 0) {
+        	int num = atoi(sendBuff + 4);
+        	if (num < number_of_songs && num != song_choice) {
+        		song_choice = num;
+        		stop_flag = STOP;
+        		pause_play_flag = PLAY;
+        	}
         }
         printf("Got Packet: %s\n", sendBuff);
 
