@@ -19,7 +19,7 @@
 int pause_play_flag;
 int stop_flag;
 char * song_title;
-char * artist;
+char * song_artist;
 
 int main(int argc, char *argv[])
 {
@@ -62,7 +62,7 @@ void * sendInfo(void * arg) {
 
 //        ticks = time(NULL);
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
-		snprintf(sendBuff, sizeof(sendBuff), "%s\n%s\n", song_title, artist); 		
+		snprintf(sendBuff, sizeof(sendBuff), "%s\n%s\n", song_title, song_artist); 		
         write(connfd, sendBuff, strlen(sendBuff)); 
         printf("Sent packet\n");
 
@@ -99,7 +99,7 @@ void * receiveInfo(void * arg) {
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
         read(connfd, sendBuff, 1024); 
         if (strncmp(sendBuff, "pause", 5) == 0) {
-        	play_pause_flag = !play_pause_flag;
+        	pause_play_flag = !pause_playflag;
         }
         printf("Got Packet: %s\n", sendBuff);
 
