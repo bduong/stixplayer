@@ -9,10 +9,14 @@
 #include <sys/types.h>
 #include <time.h> 
 #include <pthread.h>
-#include <transceiver.h>
+#include "transceiver.h"
+#include "player.h"
+
 #define RECEIVE_PORT 5001
 #define TRANSMIT_PORT 5000
 
+int pause_play_flag;
+int stop_flag;
 
 int main(int argc, char *argv[])
 {
@@ -90,6 +94,9 @@ void * receiveInfo(void * arg) {
   //      ticks = time(NULL);
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
         read(connfd, sendBuff, 1024); 
+        if (strncmp(sendBuff, "pause", 5) == 0) {
+        	play_pause_flag = !play_pause_flag;
+        }
         printf("Got Packet: %s\n", sendBuff);
 
         close(connfd);
