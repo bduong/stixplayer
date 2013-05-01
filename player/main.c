@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 {
     pthread_t decode_thread_t, listener_t, id3_t;
 	int run = 1;
+	int runOuter = 1;
 	
     
     void* decode_thread_exit_p;
@@ -32,13 +33,21 @@ int main(int argc, char* argv[])
 				pthread_create(&id3_t, NULL, sendInfo,(void *) &run);
 
                 printf("Press q to quit");
-          
-                /* init of decode thread */
-                if (pthread_create(&decode_thread_t,NULL,mad_decode,decode_thread_data_p) != 0)
-                {
+				while (1)
+				{
+					printf("Press p to play");
+					while (1) {
+						int res = fgetc(stdin);
+						if (res == 0x70) {
+							break;
+						}
+					}
+					/* init of decode thread */
+					if (pthread_create(&decode_thread_t,NULL,mad_decode,decode_thread_data_p) != 0)
+					{
                         fprintf(stderr, "Error creating decode thread!\n");
                         return 1;
-                }
+					}
 
                 /* main loop */
                 while (1)
@@ -48,7 +57,8 @@ int main(int argc, char* argv[])
                         {
                                 /* perform clean-up */
                                 pthread_cancel(decode_thread_t);
-                                break;
+								free(decode_thread_data_p);
+								return;
                         }
 						if (res == 0x70)
 						{
@@ -57,6 +67,7 @@ int main(int argc, char* argv[])
 						if (res == 0x73)
 						{
 							stop_flag = 1;
+							break;
 						}
                 }
                 
@@ -70,7 +81,7 @@ int main(int argc, char* argv[])
                 {
                         printf("Decode thread was cancelled.\n");
                 }
-        
+			}
         }
         else
         {
