@@ -1,24 +1,10 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <mad.h>
-#include <alsa/asoundlib.h>
-
-#define PAUSE 0
-#define PLAY 1
-
-#define RUN 0
-#define STOP 1
-
+#ifndef _PLAYER_H
+#define _PLAYER_H
 extern int pause_play_flag;
 extern int stop_flag;
 
 typedef struct {
-//        int fp;
         char* filename;
-//  	unsigned char *data;
 } decode_thread_data_t;
 
 typedef struct buffer_s {
@@ -29,5 +15,21 @@ typedef struct buffer_s {
 int bt_init();
 int close_handle();
 void *mad_decode(void * pthread_data);
+#endif
 
+#ifndef PAUSE
+#define PAUSE 0
+#endif
+
+#ifndef PLAY
+#define PLAY 1
+#endif
+
+#ifndef RUN
+#define RUN 0
+#endif
+
+#ifndef STOP
+#define STOP 1
+#endif
 

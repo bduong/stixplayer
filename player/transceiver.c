@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <time.h> 
 #include <pthread.h>
+
 #include "transceiver.h"
 #include "player.h"
 #include "tags.h"
@@ -27,22 +28,6 @@ int number_of_songs;
 char * songs[20];
 int socket_fd[3];
 
-/*
-int main(int argc, char *argv[])
-{
-	pthread_t id[2];
-	int runSend = 1;
-	int runRec = 1;
-	pthread_create(&id[0], NULL, sendInfo, (void *) &runSend);
-	pthread_create(&id[1], NULL, receiveInfo, (void *) &runRec);
-	
-	while (1) {
-	
-		sleep(1000);
-	}
-	
-}
-*/
 void * sendInfo(void * arg) {
 	int * run = (int *) arg;
     int listenfd = 0, connfd = 0;
@@ -68,8 +53,6 @@ void * sendInfo(void * arg) {
     {
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
 
-//        ticks = time(NULL);
-//        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
 		printf("song title: %s artist:%s\n", song_title, song_artist);
 		snprintf(sendBuff, sizeof(sendBuff), "%s\n%s\n", song_title, song_artist); 		
         write(connfd, sendBuff, strlen(sendBuff)); 
@@ -86,7 +69,6 @@ void * receiveInfo(void * arg) {
     struct sockaddr_in serv_addr; 
 
     char sendBuff[1025];
-//    time_t ticks; 
 
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	socket_fd[1] = listenfd;
@@ -105,8 +87,6 @@ void * receiveInfo(void * arg) {
     {
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
 
-  //      ticks = time(NULL);
-//        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
         read(connfd, sendBuff, 1024); 
         if (strncmp(sendBuff, "Pause", 5) == 0) {
         	pause_play_flag = !pause_play_flag;
@@ -164,8 +144,6 @@ void * sendPlaylist(void * arg) {
     {
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
 
-//        ticks = time(NULL);
-//        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
 		for (i = 0; i < number_of_songs; i++) {
 			snprintf(sendBuff, sizeof(sendBuff), "%s\n", songs[i]); 
 		
@@ -176,6 +154,5 @@ void * sendPlaylist(void * arg) {
         printf("Sent packet\n");
 
         close(connfd);
-//        sleep(1);
      }
 }

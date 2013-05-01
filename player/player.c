@@ -1,14 +1,12 @@
 //arm-linux-gcc player.c -lm -lmad -lasound -o player
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
-
 #include <mad.h>
-
 #include <alsa/asoundlib.h>
+
 #include "player.h"
 #include "playlist.h"
 
@@ -68,10 +66,9 @@ static enum mad_flow mad_output(void *data,
   
         while (nsamples--)
         { 
- /* output sample(s) in 16-bit signed little-endian PCM */
+				/* output sample(s) in 16-bit signed little-endian PCM */
 				if (stop_flag == STOP)
 				{
-//					stop_flag = RUN;
 					return MAD_FLOW_STOP;
 				}
                 while(pause_play_flag == PAUSE){}
@@ -110,8 +107,6 @@ static enum mad_flow mad_error(void *data,
   fprintf(stderr, "decoding error 0x%04x (%s) at byte offset %u\n",
 	  stream->error, mad_stream_errorstr(stream),
 	  stream->this_frame - buffer->buf);
-
-  /* return MAD_FLOW_BREAK here to stop decoding (and propagate an error) */
 
   return MAD_FLOW_CONTINUE;
   

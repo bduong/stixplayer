@@ -6,6 +6,8 @@
 #include <linux/limits.h>
 #include <assert.h>
 
+#include "tags.h"
+
 char *id3_get_tag (struct id3_tag const *tag, char const *what, unsigned int maxlen);
 char song_title[40];
 char song_artist[40];
@@ -21,7 +23,8 @@ static int show_id3(struct id3_tag const *tag)
         int index;
         char const *id;
         char const *name;
-    } const info[] = {
+    } 
+	const info[] = {
         { 0,    ID3_FRAME_TITLE,  "Title  : "   },
         { 1,    ID3_FRAME_ARTIST, "  Artist: "  },
         { 2,    ID3_FRAME_ALBUM,  "Album  : "   },
@@ -46,69 +49,61 @@ static int show_id3(struct id3_tag const *tag)
     if (!print) {
         return 0;
     }
-//		song_title = names[0];
-//		song_artist = names[1];
-		if (names[0] == NULL)		
-			strcpy( song_title, " ");
-		else		
-			strncpy( song_title, names[0], 20);
-		if (names[1] == NULL)
-            strcpy( song_artist, " ");
-		else		
-			strncpy( song_artist, names[1], 20);
-		
-		
-        for (i=0; i<=5; i++)    {
-            fprintf (stderr, "%s", info[i].name);
-            if (!names[i])  {
-                fprintf (stderr, emptystring);
-            }   else    {
-                fprintf (stderr, "%s", names[i]);
-                free (names[i]);
-            }
-            if (i%2) fprintf (stderr, "\n");
-        }
-		
+
+	if (names[0] == NULL)		
+		strcpy( song_title, " ");
+	else		
+		strncpy( song_title, names[0], 20);
+	if (names[1] == NULL)
+		strcpy( song_artist, " ");
+	else		
+		strncpy( song_artist, names[1], 20);
+	
+	for (i=0; i<=5; i++)    {
+		fprintf (stderr, "%s", info[i].name);
+		if (!names[i])  {
+			fprintf (stderr, emptystring);
+		}   else    {
+			fprintf (stderr, "%s", names[i]);
+			free (names[i]);
+		}
+		if (i%2) fprintf (stderr, "\n");
+	}		
 
     return 1;
 }
 
 int read_tag( int fd, unsigned char *data, unsigned long length){
-  struct id3_file *id3struct = NULL;
-  struct id3_tag *id3tag = NULL;
-  struct id3_tag *id3tag2 = NULL;
-  signed long id3len, id3len2;
-  unsigned long id3off = 0;
+	struct id3_file *id3struct = NULL;
+	struct id3_tag *id3tag = NULL;
+	struct id3_tag *id3tag2 = NULL;
+	signed long id3len, id3len2;
+	unsigned long id3off = 0;
 
-  id3struct = id3_file_fdopen (fd, ID3_FILE_MODE_READONLY);
+	id3struct = id3_file_fdopen (fd, ID3_FILE_MODE_READONLY);
 
+	id3len = id3_tag_query(data, length);
 
-  id3len = id3_tag_query(data, length);
+	id3off = length - 128;
+	id3len2 = id3_tag_query(data + id3off, 128);
 
-//  if (id3len <= 0) {
-    //This is for id3v1 tags
-    id3off = length - 128;
-    id3len2 = id3_tag_query(data + id3off, 128);
-//  }
+	if (id3struct)
+	{
+		id3tag = id3_tag_parse (data, id3len);
+		id3tag2 = id3_tag_parse (data + id3off, id3len2); 
+		  
+		if (id3tag2) //print out id3v1 if it exist
+		{
+		show_id3 (id3tag2);
+		}
+		else if (id3tag)  //print out id3v2 if it exist
+		{
+			show_id3 (id3tag);
+		}
+		id3_file_close (id3struct);
+	}
 
-  if (id3struct)
-  {
-    id3tag = id3_tag_parse (data, id3len);
-    id3tag2 = id3_tag_parse (data + id3off, id3len2); 
-          
-    if (id3tag2) //print out id3v1 if it exist
-    {
-      show_id3 (id3tag2);
-    }
-    else if (id3tag)  //print out id3v2 if it exist
-    {
-      show_id3 (id3tag);
-    }
-
-    id3_file_close (id3struct);
-  }
-
-  close(fd);
+	close(fd);
 }
 
 char *id3_get_tag (struct id3_tag const *tag, char const *what, unsigned int maxlen)
@@ -129,8 +124,6 @@ char *id3_get_tag (struct id3_tag const *tag, char const *what, unsigned int max
     avail = 1024;
     if (strcmp (what, ID3_FRAME_COMMENT) == 0)
     {
-        /*There may be sth wrong. I did not fully understand how to use
-            libid3tag for retrieving comments  */
         j=0;
         frame = id3_tag_findframe(tag, ID3_FRAME_COMMENT, j++);
         if (!frame) return (NULL);
@@ -144,7 +137,7 @@ char *id3_get_tag (struct id3_tag const *tag, char const *what, unsigned int max
         else
             tocopy = 0;
         if (!tocopy) return (NULL);
-        avail-=tocopy;
+		avail-=tocopy;
         strncat (printable, latin1, tocopy);
         free (latin1);
     }
