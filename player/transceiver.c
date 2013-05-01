@@ -116,6 +116,9 @@ void * receiveInfo(void * arg) {
         	stop_flag = STOP;
         	pause_play_flag = PLAY;
         	song_choice = (song_choice <= 0) ? number_of_songs - 1 : song_choice -1;        	
+        } else if (strncmp(sendBuff, "Stop", 4) == 0) {
+        	stop_flag = STOP;
+  	        pause_play_flag = PAUSE;        	
         }
         printf("Got Packet: %s\n", sendBuff);
 

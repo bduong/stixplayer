@@ -35,7 +35,7 @@ static inline signed int scale(mad_fixed_t sample)
 static enum mad_flow mad_input(void *data,
                                struct mad_stream *stream) {
   buffer_t *buffer = data;
-  if (!buffer->len&& (pause_play_flag== PAUSE))
+  if (!buffer->len || (pause_play_flag== PAUSE))
     return MAD_FLOW_STOP;
   mad_stream_buffer(stream, buffer->buf, buffer->len);
   buffer->len = 0;
@@ -154,6 +154,8 @@ void *mad_decode(void * pthread_data) {
 
   mad_decoder_run(&decoder, MAD_DECODER_MODE_SYNC);
   mad_decoder_finish(&decoder);
+  stop_flag = STOP;
+  sleep(1);
 
 decode_exit:
   munmap(data, s.st_size);
