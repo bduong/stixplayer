@@ -15,5 +15,8 @@
 *.exe
 *.out
 *.app
+<<<<<<< HEAD
 
 *gen
+player/player
+player/network

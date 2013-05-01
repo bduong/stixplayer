@@ -14,57 +14,9 @@
 #define ALSA_PCM_NEW_HW_PARAMS_API
 
 snd_pcm_t *handle;
+int pause_play_flag;
+int stop_flag;
 
-typedef struct buffer_s {
-  unsigned char *buf;
-  unsigned long len;
-} buffer_t;
-
-//static void mad_decode(unsigned char *, unsigned long);
-/*
-int main(int argc, char *argv[]){
-
-  init();
-   if (argc != 2) {
-    fprintf(stderr, "Usage: ./madtest mp3file\n");
-    return 1;
-  }
-
-  char *filename = argv[1];
-  int ret;
-
-  struct stat s;
-  ret = stat(filename, &s);
-  if (ret < 0) {
-    fprintf(stderr, "Could not stat %s\n", filename);
-    return 1;
-  }
-
-  int fd = open(filename, O_RDONLY);
-  if (fd < 0) {
-    perror("open");
-    return 1;
-  }
-  
-  unsigned char *data;
-  data = mmap(NULL, s.st_size, PROT_READ, MAP_PRIVATE|MAP_FILE, fd, 0);
-  if ((int)data == -1) {
-    perror("mmap");
-    close(fd);
-    return 1;
-  }
-
-  mad_decode(data, s.st_size);
-
-  munmap(data, s.st_size);
-  close(fd);
-
-  snd_pcm_drain(handle);
-  snd_pcm_close(handle);
-
-  return 0;
-}
-*/
 static inline signed int scale(mad_fixed_t sample)
 {
   /* round */
@@ -83,11 +35,11 @@ static inline signed int scale(mad_fixed_t sample)
 static enum mad_flow mad_input(void *data,
                                struct mad_stream *stream) {
   buffer_t *buffer = data;
-  if (!buffer->len)
+  if (!buffer->len || (pause_play_flag== PAUSE))
     return MAD_FLOW_STOP;
   mad_stream_buffer(stream, buffer->buf, buffer->len);
   buffer->len = 0;
-  return MAD_FLOW_CONTINUE;
+  return (stop_flag) ? MAD_FLOW_STOP : MAD_FLOW_CONTINUE;
 }
 
 static enum mad_flow mad_output(void *data,
@@ -108,9 +60,15 @@ static enum mad_flow mad_output(void *data,
         right_ch  = pcm->samples[1];
   
         while (nsamples--)
-        {
-                /* output sample(s) in 16-bit signed little-endian PCM */
-                sample = scale(*left_ch++);
+        { 
+ /* output sample(s) in 16-bit signed little-endian PCM */
+				if (stop_flag == STOP)
+				{
+//					stop_flag = RUN;
+					return MAD_FLOW_STOP;
+				}
+                while(pause_play_flag == PAUSE){}
+				sample = scale(*left_ch++);
                 _buf[0] = (sample >> 0) & 0xff;
                 _buf[1] = (sample >> 8) & 0xff;
                 sample = scale(*right_ch++);
@@ -133,8 +91,8 @@ static enum mad_flow mad_output(void *data,
                         fprintf(stderr, "short write, write %d frames\n", rc);
                 }
         }
-        
-        return MAD_FLOW_CONTINUE;
+			
+        return (stop_flag) ? MAD_FLOW_STOP : MAD_FLOW_CONTINUE;
 }
 
 static enum mad_flow mad_error(void *data,
@@ -152,12 +110,38 @@ static enum mad_flow mad_error(void *data,
   
 }
 
-void mad_decode(unsigned char *data, unsigned long size) {
+void *mad_decode(void * pthread_data) {
+  decode_thread_data_t *decode_thread_data = (decode_thread_data_t*)pthread_data;
   struct mad_decoder decoder;
   buffer_t buffer;
+  unsigned char *data;
+
+  struct stat s;
+  int ret = stat(decode_thread_data->filename, &s);
+  if (ret < 0) {
+    perror("Could not stat");
+    goto decode_exit;
+  }
+
+  int fd = open(decode_thread_data->filename, O_RDONLY);
+  if (fd < 0) {
+    perror("file open failed");
+    goto decode_exit;
+  }
+
+  data = mmap(NULL, s.st_size, PROT_READ, MAP_PRIVATE|MAP_FILE, fd, 0);
+  if ((int)data == -1) {
+    perror("mmap failed");
+    close(fd);
+    goto decode_exit;
+  }
 
   buffer.buf = data;
-  buffer.len = size;
+  buffer.len = s.st_size;
+
+  read_tag(fd, data, s.st_size);
+ 
+  bt_init();
 
   mad_decoder_init(&decoder, &buffer,
                    mad_input,
@@ -170,9 +154,17 @@ void mad_decode(unsigned char *data, unsigned long size) {
 
   mad_decoder_run(&decoder, MAD_DECODER_MODE_SYNC);
   mad_decoder_finish(&decoder);
+  stop_flag = STOP;
+  sleep(1);
+
+decode_exit:
+  munmap(data, s.st_size);
+  close(fd);
+  close_handle();
+  pthread_exit(NULL);
 }
 
-int init()
+int bt_init()
 {
   int err;
   int rate, dir;
