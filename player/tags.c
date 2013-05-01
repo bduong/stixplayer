@@ -7,6 +7,8 @@
 #include <assert.h>
 
 char *id3_get_tag (struct id3_tag const *tag, char const *what, unsigned int maxlen);
+char song_title[40];
+char song_artist[40];
 
 static int show_id3(struct id3_tag const *tag)
 {
@@ -14,6 +16,7 @@ static int show_id3(struct id3_tag const *tag)
     int print = 0;
     char emptystring[31];
     char *names[6];
+	
     struct {
         int index;
         char const *id;
@@ -43,7 +46,18 @@ static int show_id3(struct id3_tag const *tag)
     if (!print) {
         return 0;
     }
-
+//		song_title = names[0];
+//		song_artist = names[1];
+		if (names[0] == NULL)		
+			strcpy( song_title, " ");
+		else		
+			strncpy( song_title, names[0], 20);
+		if (names[1] == NULL)
+            strcpy( song_artist, " ");
+		else		
+			strncpy( song_artist, names[1], 20);
+		
+		
         for (i=0; i<=5; i++)    {
             fprintf (stderr, "%s", info[i].name);
             if (!names[i])  {
@@ -54,6 +68,7 @@ static int show_id3(struct id3_tag const *tag)
             }
             if (i%2) fprintf (stderr, "\n");
         }
+		
 
     return 1;
 }

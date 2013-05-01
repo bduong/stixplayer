@@ -2,14 +2,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
+
+#include "transceiver.h"
 #include "player.h"
 #include "tags.h"
 
 int pause_play_flag;
+int stop_flag;
 
 int main(int argc, char* argv[])
 {
-    pthread_t decode_thread_t;
+    pthread_t decode_thread_t, listener_t, id3_t;
+	int run = 1;
 	
     
     void* decode_thread_exit_p;
@@ -22,8 +26,10 @@ int main(int argc, char* argv[])
 //                decode_thread_data_p->fp = 0;
                 decode_thread_data_p->filename = argv[1];
 				pause_play_flag = 0;
-//				stop_flag = 0;
+				stop_flag = 0;
 //                decode_thread_data_p->data = NULL;
+				pthread_create(&listener_t, NULL, receiveInfo,(void *) &run);
+				pthread_create(&id3_t, NULL, sendInfo,(void *) &run);
 
                 printf("Press q to quit");
           
@@ -47,7 +53,10 @@ int main(int argc, char* argv[])
 						if (res == 0x70)
 						{
 							pause_play_flag = !pause_play_flag;
-							printf("pause/play\n");
+						}
+						if (res == 0x73)
+						{
+							stop_flag = 1;
 						}
                 }
                 

@@ -5,8 +5,8 @@ CFLAGS=-I$(IDIR)
 LDFLAGS=-L$(IDIR)
 OPTS =-lm -lmad -lasound -lid3tag
 LDIR =../lib
-DEPS = player.h tags.h
-OBJ = player.o tags.o main.o
+DEPS = player.h tags.h transceiver.h
+OBJ = player.o tags.o main.o transceiver.o
 
 default: play
 
@@ -18,11 +18,10 @@ all: play network
 play: $(OBJ) $(DEPS)
 	$(CC) $(OPTS) -o player $^ $(CFLAGS) $(LDFLAGS)
 	
-network: transceiver.h
-	$(CC) transceiver.c -o network -lpthread -I$(IDIR)
+network: 
+	$(CC) transceiver.c -o network -lpthread
 
 .PHONY: clean network play
 
 clean:
 	rm -f $(IDIR)/*.o $(IDIR)/*~ $(IDIR)core $(IDIR)/player $(IDIR)/network
-

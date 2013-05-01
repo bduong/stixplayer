@@ -18,9 +18,9 @@
 
 int pause_play_flag;
 int stop_flag;
-char * song_title;
-char * song_artist;
-
+char song_title[40];
+char song_artist[40];
+/*
 int main(int argc, char *argv[])
 {
 	pthread_t id[2];
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	}
 	
 }
-
+*/
 void * sendInfo(void * arg) {
 	int * run = (int *) arg;
     int listenfd = 0, connfd = 0;
@@ -62,6 +62,7 @@ void * sendInfo(void * arg) {
 
 //        ticks = time(NULL);
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
+		printf("song title: %s artist:%s\n", song_title, song_artist);
 		snprintf(sendBuff, sizeof(sendBuff), "%s\n%s\n", song_title, song_artist); 		
         write(connfd, sendBuff, strlen(sendBuff)); 
         printf("Sent packet\n");
@@ -98,8 +99,8 @@ void * receiveInfo(void * arg) {
   //      ticks = time(NULL);
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
         read(connfd, sendBuff, 1024); 
-        if (strncmp(sendBuff, "pause", 5) == 0) {
-        	pause_play_flag = !pause_playflag;
+        if (strncmp(sendBuff, "Pause", 5) == 0) {
+        	pause_play_flag = !pause_play_flag;
         }
         printf("Got Packet: %s\n", sendBuff);
 

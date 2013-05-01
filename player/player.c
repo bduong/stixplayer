@@ -15,6 +15,7 @@
 
 snd_pcm_t *handle;
 int pause_play_flag;
+int stop_flag;
 
 static inline signed int scale(mad_fixed_t sample)
 {
@@ -61,6 +62,11 @@ static enum mad_flow mad_output(void *data,
         while (nsamples--)
         { 
  /* output sample(s) in 16-bit signed little-endian PCM */
+				if (stop_flag)
+				{
+					stop_flag = 0;
+					return MAD_FLOW_STOP;
+				}
                 while(pause_play_flag){}
 				sample = scale(*left_ch++);
                 _buf[0] = (sample >> 0) & 0xff;
