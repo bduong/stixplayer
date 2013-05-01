@@ -10,12 +10,15 @@
 
 #include <alsa/asoundlib.h>
 #include "player.h"
+#include "playlist.h"
 
 #define ALSA_PCM_NEW_HW_PARAMS_API
 
 snd_pcm_t *handle;
 int pause_play_flag;
 int stop_flag;
+int song_choice;
+int number_of_songs;
 
 static inline signed int scale(mad_fixed_t sample)
 {
@@ -35,8 +38,12 @@ static inline signed int scale(mad_fixed_t sample)
 static enum mad_flow mad_input(void *data,
                                struct mad_stream *stream) {
   buffer_t *buffer = data;
-  if (!buffer->len || (pause_play_flag== PAUSE))
+  if (pause_play_flag== PAUSE)
     return MAD_FLOW_STOP;
+  if (!buffer->len) {
+	song_choice = (song_choice + 1) % number_of_songs;
+	return MAD_FLOW_STOP;
+  }
   mad_stream_buffer(stream, buffer->buf, buffer->len);
   buffer->len = 0;
   return (stop_flag) ? MAD_FLOW_STOP : MAD_FLOW_CONTINUE;

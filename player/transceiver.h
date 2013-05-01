@@ -1,4 +1,4 @@
-extern int break_input_loop;
+extern int socket_fd[3];
 
 void * sendInfo(void *);
 void * receiveInfo(void *);

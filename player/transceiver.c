@@ -22,10 +22,11 @@ int pause_play_flag;
 int stop_flag;
 char song_title[40];
 char song_artist[40];
-char ** playlist;
-int playlist_length;
 int song_choice;
 int number_of_songs;
+char * songs[20];
+int socket_fd[3];
+
 /*
 int main(int argc, char *argv[])
 {
@@ -51,6 +52,7 @@ void * sendInfo(void * arg) {
     time_t ticks; 
 
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
+	socket_fd[0] = listenfd;
     memset(&serv_addr, '0', sizeof(serv_addr));
     memset(sendBuff, '0', sizeof(sendBuff)); 
 
@@ -87,6 +89,7 @@ void * receiveInfo(void * arg) {
 //    time_t ticks; 
 
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
+	socket_fd[1] = listenfd;
     memset(&serv_addr, '0', sizeof(serv_addr));
     memset(sendBuff, '0', sizeof(sendBuff)); 
 
@@ -144,7 +147,8 @@ void * sendPlaylist(void * arg) {
     char sendBuff[2049];
     time_t ticks; 
 
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);	
+	socket_fd[2] = listenfd;
     memset(&serv_addr, '0', sizeof(serv_addr));
     memset(sendBuff, '0', sizeof(sendBuff)); 
 
