@@ -27,27 +27,12 @@ int main(int argc, char* argv[])
     if (argc > 1)
     {
     			getMP3Files(argv[1]);
-   				printf("Select song\n");
-    			for (i = 0; i < number_of_songs; i++) {
-    				printf("%d %s\n", i, songs[i]);
-    			}
-    			int choice;
-    			int result = scanf("%d", &choice);
-//                decode_thread_data_p->fp = 0;
-				char buffer[50];
-				if (argv[1][strlen(argv[1]) - 1] == '/') { 
-					sprintf(buffer, "%s%s", argv[1], songs[choice]);
-				} else {
-					sprintf(buffer, "%s/%s", argv[1], songs[choice]);				
-				}
-				printf("%s\n", buffer);
-                decode_thread_data_p->filename = buffer;//argv[1];
 				pause_play_flag = PAUSE;
 				stop_flag = 0;
 //                decode_thread_data_p->data = NULL;
 				pthread_create(&listener_t, NULL, receiveInfo,(void *) &run);
 				pthread_create(&id3_t, NULL, sendInfo,(void *) &run);
-
+   				int choice = 0;
                 printf("Press q to quit\n");
 				while (1)
 				{
@@ -61,6 +46,21 @@ int main(int argc, char* argv[])
 							break;
 						}*/
 					}
+					printf("Select song\n");
+	    			for (i = 0; i < number_of_songs; i++) {
+    				printf("%d %s\n", i, songs[i]);
+    				}
+//    				int result = scanf("%d", &choice);
+//              	  decode_thread_data_p->fp = 0;
+					char buffer[50];
+					if (argv[1][strlen(argv[1]) - 1] == '/') { 
+						sprintf(buffer, "%s%s", argv[1], songs[choice]);
+					} else {
+						sprintf(buffer, "%s/%s", argv[1], songs[choice]);				
+					}
+					printf("%s\n", buffer);
+
+	                decode_thread_data_p->filename = buffer;//argv[1];
 					/* init of decode thread */
 					if (pthread_create(&decode_thread_t,NULL,mad_decode,decode_thread_data_p) != 0)
 					{
@@ -83,7 +83,20 @@ int main(int argc, char* argv[])
 						{
 							pause_play_flag = !pause_play_flag;
 						}
-						if (res == 0x73)
+						else if (res == 'b') {
+							stop_flag = 1;
+							pause_play_flag = PLAY;
+							choice = (choice - 1);
+							if (choice < 0) choice = number_of_songs - 1;
+							break;
+						}
+						else if (res == 'n') {
+							stop_flag = 1;
+							pause_play_flag = PLAY;
+							choice = (choice + 1) % number_of_songs;
+							break;
+						}
+						else if (res == 0x73)
 						{
 							stop_flag = 1;
 							pause_play_flag = PAUSE;
