@@ -16,6 +16,7 @@
 
 #define RECEIVE_PORT 5001
 #define TRANSMIT_PORT 5000
+#define PLAYLIST_PORT 5002
 
 int pause_play_flag;
 int stop_flag;
@@ -142,7 +143,7 @@ void * sendPlaylist(void * arg) {
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(TRANSMIT_PORT); 
+    serv_addr.sin_port = htons(PLAYLIST_PORT); 
 
     bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)); 
 
@@ -154,14 +155,16 @@ void * sendPlaylist(void * arg) {
 
 //        ticks = time(NULL);
 //        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
-		for (i = 0; i < playlist_length; i++) {
-			snprintf(sendBuff, sizeof(sendBuff), "%s\r\n", playlist[i]); 
+		for (i = 0; i < number_of_songs; i++) {
+			snprintf(sendBuff, sizeof(sendBuff), "%s\n", songs[i]); 
 		
         	write(connfd, sendBuff, strlen(sendBuff)); 
         }
+        sprintf(sendBuff, "done\n");
+      	write(connfd, sendBuff, strlen(sendBuff));         
         printf("Sent packet\n");
 
         close(connfd);
-        sleep(1);
+//        sleep(1);
      }
 }

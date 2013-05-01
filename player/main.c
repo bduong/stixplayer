@@ -17,7 +17,7 @@ int song_choice;
 
 int main(int argc, char* argv[])
 {
-    pthread_t decode_thread_t, listener_t, id3_t;
+    pthread_t decode_thread_t, listener_t, id3_t, id4_t;
 	int run = 1;
 	int runOuter = 1;
 	int i;
@@ -34,6 +34,7 @@ int main(int argc, char* argv[])
 //                decode_thread_data_p->data = NULL;
 				pthread_create(&listener_t, NULL, receiveInfo,(void *) &run);
 				pthread_create(&id3_t, NULL, sendInfo,(void *) &run);
+				pthread_create(&id4_t, NULL, sendPlaylist,(void *) &run);				
    				song_choice = 0;
                 printf("Press q to quit\n");
 				while (1)
