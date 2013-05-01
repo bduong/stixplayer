@@ -9,6 +9,11 @@
             android:layout_height="wrap_content"
             android:text="Song Title"
             android:id="@+id/SongTitle"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artist"
+            android:id="@+id/artist" android:layout_gravity="left|center_vertical"/>
     <View
             android:layout_width="fill_parent"
             android:layout_height="100dp">
@@ -16,7 +21,7 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="210dp">
+            android:layout_height="wrap_content">
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,7 +38,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="stop"
+                android:id="@+id/stop" android:layout_gravity="center_horizontal|top"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="next"
                 android:id="@+id/next" android:layout_gravity="center_horizontal|top"/>
     </LinearLayout>
+    <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Playlist"
+            android:id="@+id/playlist"/>
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollView" android:layout_gravity="center" android:fillViewport="false">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" android:id="@+id/playlistView">
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
