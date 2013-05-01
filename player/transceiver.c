@@ -20,6 +20,8 @@ int pause_play_flag;
 int stop_flag;
 char song_title[40];
 char song_artist[40];
+char ** playlist;
+int playlist_length;
 /*
 int main(int argc, char *argv[])
 {
@@ -109,4 +111,41 @@ void * receiveInfo(void * arg) {
      }
 }
 
+void * sendPlaylist(void * arg) {
+	int * run = (int *) arg;
+    int listenfd = 0, connfd = 0;
+    struct sockaddr_in serv_addr; 
+    int i;
 
+    char sendBuff[2049];
+    time_t ticks; 
+
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    memset(&serv_addr, '0', sizeof(serv_addr));
+    memset(sendBuff, '0', sizeof(sendBuff)); 
+
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    serv_addr.sin_port = htons(TRANSMIT_PORT); 
+
+    bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)); 
+
+    listen(listenfd, 10); 
+
+    while(run)
+    {
+        connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
+
+//        ticks = time(NULL);
+//        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
+		for (i = 0; i < playlist_length; i++) {
+			snprintf(sendBuff, sizeof(sendBuff), "%s\r\n", playlist[i[); 
+		
+        	write(connfd, sendBuff, strlen(sendBuff)); 
+        }
+        printf("Sent packet\n");
+
+        close(connfd);
+        sleep(1);
+     }
+}
