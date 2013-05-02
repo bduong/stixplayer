@@ -1,6 +1,8 @@
 package com.stix.player;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -17,7 +19,6 @@ public class GetPlaylistThread extends Thread{
     private LinearLayout linearLayout;
     private Activity activity;
 
-
     public GetPlaylistThread(LinearLayout linearLayout, Activity activity) {
         this.linearLayout = linearLayout;
         this.activity = activity;
@@ -32,8 +33,6 @@ public class GetPlaylistThread extends Thread{
         }
 
     }
-
-
 
     public void fetchPlayList() throws IOException {
         Socket clientSocket = new Socket(PlayerControl.GUMSTIX_IP, PlayerControl.PLAYLIST_SOCKET_PORT);
@@ -54,25 +53,30 @@ public class GetPlaylistThread extends Thread{
             linearLayout.post(new Runnable() {
                 @Override
                 public void run() {
+                    GradientDrawable gd = new GradientDrawable(
+                            GradientDrawable.Orientation.TOP_BOTTOM,
+                            new int[] {0xFF449def,0xFF2f6699});
+                    gd.setCornerRadius(4f);
                     Button button = new Button(activity);
                     button.setText(message);
+                    button.setBackgroundDrawable(gd);
+                    button.setMinimumHeight(50);
+                    button.setPadding(10,10,10,10);
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             new TransmitterThread("Play " + String.valueOf(index)).start();
                         }
                     });
+
                     linearLayout.addView(button);
+
+                    View view = new View(activity);
+                    view.setMinimumHeight(10);
+                    linearLayout.addView(view);
                 }
             });
         }
-//        text.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                text.setText(message);
-//            }
-//        });
         clientSocket.close();
-        //socket.close();
     }
 }

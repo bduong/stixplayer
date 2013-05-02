@@ -36,13 +36,15 @@ public class ReceiverThread extends Thread{
         songTitle.post(new Runnable() {
             @Override
             public void run() {
-                songTitle.setText(title.trim());
+                String setTitle = title.trim();
+                songTitle.setText(setTitle.isEmpty() ? "No Title" : setTitle);
             }
         });
         artist.post(new Runnable() {
             @Override
             public void run() {
-                artist.setText(artistName.trim());
+                String setArtist = artistName.trim();
+                artist.setText(artistName.isEmpty() ? "No Artist" : setArtist);
             }
         });
         //socket.close();
@@ -55,9 +57,6 @@ public class ReceiverThread extends Thread{
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-    }
-
-    public void tearDown() {
     }
 
 }

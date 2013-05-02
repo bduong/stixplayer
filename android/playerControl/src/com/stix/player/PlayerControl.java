@@ -1,7 +1,11 @@
 package com.stix.player;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 
@@ -25,41 +29,36 @@ public class PlayerControl extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-
         songTitle = (TextView) findViewById(R.id.SongTitle);
         artist = (TextView) findViewById(R.id.artist);
+        final LinearLayout layout = (LinearLayout) findViewById(R.id.playlistView);
+        layout.removeAllViews();
 
         final ImageButton refresh = (ImageButton) findViewById(R.id.refresh);
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new ReceiverThread(songTitle, artist).start();
-            }
-        });
-
-        final ImageButton backButton = (ImageButton) findViewById(R.id.back);
-        backButton.setOnClickListener(new SendingClickListener("Back"));
-
-        final ImageButton pauseButton = (ImageButton) findViewById(R.id.pause);
-        pauseButton.setOnClickListener(new SendingClickListener("Pause"));
-
-        final ImageButton nextButton = (ImageButton) findViewById(R.id.next);
-        nextButton.setOnClickListener(new SendingClickListener("Next"));
-
-        final ImageButton stopButton = (ImageButton) findViewById(R.id.stop);
-        stopButton.setOnClickListener(new SendingClickListener("Stop"));
-
-        final LinearLayout layout = (LinearLayout) findViewById(R.id.playlistView);
-        layout.removeAllViews();
-
-
-        final Button playlistbutton = (Button) findViewById(R.id.playlist);
-        playlistbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 new GetPlaylistThread(layout, thisActivity).start();
             }
         });
+        refresh.setOnTouchListener(new ImageTouchListener());
+
+        final ImageButton backButton = (ImageButton) findViewById(R.id.back);
+        backButton.setOnClickListener(new SendingClickListener("Back"));
+        backButton.setOnTouchListener(new ImageTouchListener());
+
+        final ImageButton pauseButton = (ImageButton) findViewById(R.id.pause);
+        pauseButton.setOnClickListener(new SendingClickListener("Pause"));
+        pauseButton.setOnTouchListener(new ImageTouchListener());
+
+        final ImageButton nextButton = (ImageButton) findViewById(R.id.next);
+        nextButton.setOnClickListener(new SendingClickListener("Next"));
+        nextButton.setOnTouchListener(new ImageTouchListener());
+
+        final ImageButton stopButton = (ImageButton) findViewById(R.id.stop);
+        stopButton.setOnClickListener(new SendingClickListener("Stop"));
+        stopButton.setOnTouchListener(new ImageTouchListener());
     }
 
     public class SendingClickListener implements View.OnClickListener {
@@ -73,6 +72,24 @@ public class PlayerControl extends Activity {
         @Override
         public void onClick(View view) {
             new TransmitterThread(message).start();
+        }
+    }
+
+    public class ImageTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    v.getBackground().setColorFilter(0xe0f47521, PorterDuff.Mode.SRC_ATOP);
+                    v.invalidate();
+                    break;
+                }
+                case MotionEvent.ACTION_UP: {
+                    v.getBackground().clearColorFilter();
+                    v.invalidate();
+                    break;
+                }
+            }
+            return false;
         }
     }
 }
