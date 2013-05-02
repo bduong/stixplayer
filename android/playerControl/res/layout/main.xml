@@ -14,11 +14,12 @@
             android:layout_height="wrap_content"
             android:text="Artist"
             android:id="@+id/artist" android:layout_gravity="left|center_vertical"/>
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+    <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:text="Refresh"
-            android:id="@+id/refresh" android:layout_gravity="left|center_vertical"/>
+            android:id="@+id/refresh" android:layout_gravity="left|center_vertical"
+            android:background="@drawable/sync"/>
     <View
             android:layout_width="fill_parent"
             android:layout_height="60dp">
@@ -26,31 +27,35 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-        <Button
+            android:layout_height="70dp">
+        <ImageButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="back"
-                android:id="@+id/back" android:layout_gravity="center_horizontal|top"/>
-        <Button
+                android:id="@+id/back" android:layout_gravity="center_horizontal|top"
+                android:background="@drawable/button_previous"/>
+        <ImageButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="pause"
-                android:id="@+id/pause" android:layout_gravity="center_horizontal|top"/>
-        <Button
+                android:id="@+id/pause" android:layout_gravity="center_horizontal|top"
+                android:background="@drawable/button_pause"/>
+        <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="stop"
-                android:id="@+id/stop" android:layout_gravity="center_horizontal|top"/>
-        <Button
+                android:id="@+id/stop" android:layout_gravity="center_horizontal|top"
+                android:background="@drawable/button_stop"/>
+        <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="next"
-                android:id="@+id/next" android:layout_gravity="center_horizontal|top"/>
+                android:id="@+id/next" android:layout_gravity="center_horizontal|top"
+                android:background="@drawable/button_next"/>
     </LinearLayout>
     <Button
             android:layout_width="fill_parent"

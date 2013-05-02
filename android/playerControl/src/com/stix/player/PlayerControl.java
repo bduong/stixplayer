@@ -25,10 +25,11 @@ public class PlayerControl extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+
         songTitle = (TextView) findViewById(R.id.SongTitle);
         artist = (TextView) findViewById(R.id.artist);
 
-        final Button refresh = (Button) findViewById(R.id.refresh);
+        final ImageButton refresh = (ImageButton) findViewById(R.id.refresh);
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -36,19 +37,20 @@ public class PlayerControl extends Activity {
             }
         });
 
-        final Button backButton = (Button) findViewById(R.id.back);
+        final ImageButton backButton = (ImageButton) findViewById(R.id.back);
         backButton.setOnClickListener(new SendingClickListener("Back"));
 
-        final Button pauseButton = (Button) findViewById(R.id.pause);
+        final ImageButton pauseButton = (ImageButton) findViewById(R.id.pause);
         pauseButton.setOnClickListener(new SendingClickListener("Pause"));
 
-        final Button nextButton = (Button) findViewById(R.id.next);
+        final ImageButton nextButton = (ImageButton) findViewById(R.id.next);
         nextButton.setOnClickListener(new SendingClickListener("Next"));
 
-        final Button stopButton = (Button) findViewById(R.id.stop);
+        final ImageButton stopButton = (ImageButton) findViewById(R.id.stop);
         stopButton.setOnClickListener(new SendingClickListener("Stop"));
 
         final LinearLayout layout = (LinearLayout) findViewById(R.id.playlistView);
+        layout.removeAllViews();
 
 
         final Button playlistbutton = (Button) findViewById(R.id.playlist);
