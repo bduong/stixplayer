@@ -1,3 +1,12 @@
+/**
+* Copyright (c) 2013 Franklin Wong, Ben Duong
+* All Rights Reserved
+*/
+/**
+* @file
+*
+* @brief Extract the ID3 tag information from an MP3 file.
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

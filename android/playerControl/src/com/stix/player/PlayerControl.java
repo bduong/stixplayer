@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 
+/**
+ * Main application activity
+ */
 public class PlayerControl extends Activity {
 
     private TextView songTitle;
@@ -61,6 +64,10 @@ public class PlayerControl extends Activity {
         stopButton.setOnTouchListener(new ImageTouchListener());
     }
 
+    /**
+     * Listener that spawns a new Transmitter thread and sends a message
+     * to the server when a button is pressed.
+     */
     public class SendingClickListener implements View.OnClickListener {
 
         private String message;
@@ -75,6 +82,9 @@ public class PlayerControl extends Activity {
         }
     }
 
+    /**
+     * Changes the color filter on an image when pressed.
+     */
     public class ImageTouchListener implements View.OnTouchListener {
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {

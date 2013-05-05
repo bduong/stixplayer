@@ -1,6 +1,25 @@
-#ifndef _PLAYER_H
-#define _PLAYER_H
+/**
+* Copyright (c) 2013 Franklin Wong, Ben Duong
+* All Rights Reserved
+*/
+/**
+* @file
+*
+* @brief
+*
+* @summary
+*/
+#ifndef _PLAYER_H_
+#define _PLAYER_H_
+
+/**
+* Control flag signaling whether the player should (un)pause.
+*/
 extern int pause_play_flag;
+
+/**
+* Control flag signalling whether the player should stop playing and reset.
+*/
 extern int stop_flag;
 
 typedef struct {

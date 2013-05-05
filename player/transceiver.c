@@ -1,3 +1,12 @@
+/**
+* Copyright (c) 2013 Franklin Wong, Ben Duong
+* All Rights Reserved
+*/
+/**
+* @file
+*
+* @brief Capture and process TCP/IP requests from the remote client.
+*/
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -28,13 +37,15 @@ int number_of_songs;
 char * songs[20];
 int socket_fd[3];
 
+/**
+* @brief Sends the current song information when requested by a client.
+*/
 void * sendInfo(void * arg) {
 	int * run = (int *) arg;
     int listenfd = 0, connfd = 0;
     struct sockaddr_in serv_addr; 
 
     char sendBuff[1025];
-    time_t ticks; 
 
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	socket_fd[0] = listenfd;
@@ -63,6 +74,9 @@ void * sendInfo(void * arg) {
      }
 }
 
+/**
+* @brief Receives and processes all user commands.
+*/
 void * receiveInfo(void * arg) {
 	int * run = (int *) arg;
     int listenfd = 0, connfd = 0;
@@ -118,6 +132,9 @@ void * receiveInfo(void * arg) {
      }
 }
 
+/**
+* @brief Sends the songs names in the playlist to the client when requested.
+*/
 void * sendPlaylist(void * arg) {
 	int * run = (int *) arg;
     int listenfd = 0, connfd = 0;
@@ -125,7 +142,6 @@ void * sendPlaylist(void * arg) {
     int i;
 
     char sendBuff[2049];
-    time_t ticks; 
 
     listenfd = socket(AF_INET, SOCK_STREAM, 0);	
 	socket_fd[2] = listenfd;

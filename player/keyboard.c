@@ -1,3 +1,12 @@
+/**
+* Copyright (c) 2013 Franklin Wong, Ben Duong
+* All Rights Reserved
+*/
+/**
+* @file
+*
+* @brief Capture user input from the keyboard
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,12 +17,16 @@
 #include "player.h"
 #include "playlist.h"
 
+
+/**
+* @brief Captures the user input from standard input.
+*/
 void *keyboard(void * arg)
 {
 	while (1)
 	{
 		int res = fgetc(stdin);
-		if (res == 0x70) //pause/play
+		if (res == 'p') //pause/play
 		{
 			pause_play_flag = !pause_play_flag;
 		}
@@ -28,7 +41,7 @@ void *keyboard(void * arg)
 			pause_play_flag = PLAY;
 			song_choice = (song_choice + 1) % number_of_songs;		
 		}
-		else if (res == 0x73) //stop
+		else if (res == 's') //stop
 		{
 			stop_flag=STOP;
 			pause_play_flag = PAUSE;

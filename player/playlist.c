@@ -1,6 +1,12 @@
-/*
-    * This program displays the names of all files in the current directory.
-     */
+/**
+* Copyright (c) 2013 Franklin Wong, Ben Duong
+* All Rights Reserved
+*/
+/**
+* @file
+*
+* @brief Retrieve the file names of all mp3 files in the given directory.
+*/
 
 #include <dirent.h> 
 #include <stdio.h> 
@@ -10,6 +16,10 @@
 
 char * songs[20];
 int number_of_songs;
+
+/**
+* @ brief Scan a directory and pull out all file names that contain the .mp3 extension.
+*/
 int getMP3Files(char * directory)
 {
     DIR           *d;

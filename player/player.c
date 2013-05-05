@@ -1,4 +1,15 @@
-//arm-linux-gcc player.c -lm -lmad -lasound -o player
+/**
+* Copyright (c) 2013 Franklin Wong, Ben Duong
+* All Rights Reserved
+*/
+/**
+* @file
+*
+* @brief MP3 decoder and streamer
+*
+* Decodes the MP3 file and streams to the bluetooth device.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -33,6 +44,9 @@ static inline signed int scale(mad_fixed_t sample)
   return sample >> (MAD_F_FRACBITS + 1 - 16);
 }
 
+/**
+* @brief Read in the MP3 file data.
+*/
 static enum mad_flow mad_input(void *data,
                                struct mad_stream *stream) {
   buffer_t *buffer = data;
@@ -47,6 +61,9 @@ static enum mad_flow mad_input(void *data,
   return (stop_flag) ? MAD_FLOW_STOP : MAD_FLOW_CONTINUE;
 }
 
+/**
+* @brief Write audio signal to the bluetooth device.
+*/
 static enum mad_flow mad_output(void *data,
                                 struct mad_header const *header,
                                 struct mad_pcm *pcm) {
@@ -99,6 +116,9 @@ static enum mad_flow mad_output(void *data,
         return (stop_flag) ? MAD_FLOW_STOP : MAD_FLOW_CONTINUE;
 }
 
+/**
+* @brief Handle any decoding errors.
+*/
 static enum mad_flow mad_error(void *data,
                                struct mad_stream *stream,
                                struct mad_frame *frame) {
@@ -112,6 +132,9 @@ static enum mad_flow mad_error(void *data,
   
 }
 
+/**
+* @brief Decode and stream an MP3 file
+*/
 void *mad_decode(void * pthread_data) {
   decode_thread_data_t *decode_thread_data = (decode_thread_data_t*)pthread_data;
   struct mad_decoder decoder;
@@ -166,6 +189,11 @@ decode_exit:
   pthread_exit(NULL);
 }
 
+/**
+* @brief Initialize the bluetooth device
+*
+* Initialize the bluetooth device and pair with it
+*/
 int bt_init()
 {
   int err;
@@ -227,15 +255,7 @@ int bt_init()
              snd_strerror (err));
     return (1);
   }	
-/*
-  if ((err = snd_pcm_hw_params_set_period_size_near(handle, hw_params, &frames, &dir)) < 0)
-  {
-    fprintf (stderr,
-            "cannot set period(%s)\n",
-             snd_strerror (err));
-    return (1);
-  }
-*/
+
   if ((err = snd_pcm_hw_params_set_channels (handle, hw_params, 2)) < 0)
   {
     fprintf (stderr,
@@ -265,6 +285,9 @@ int bt_init()
   return 0;
 }
 
+/**
+* @brief close the handle to the bluetooth device.
+*/
 int close_handle()
 {
   snd_pcm_drain(handle);

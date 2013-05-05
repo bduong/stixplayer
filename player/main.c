@@ -1,9 +1,16 @@
-#ifndef STDLIB
-#define STDLIB
+/**
+* Copyright (c) 2013 Franklin Wong, Ben Duong
+* All Rights Reserved
+*/
+/**
+* @file
+*
+* @brief MP3 Player
+*
+* @summary MP3 Player implemented for linux
+*/
 #include <stdlib.h>
 #include <stdio.h>
-#endif
-
 #include <string.h>
 #include <pthread.h>
 #include <signal.h>
@@ -101,7 +108,8 @@ int main(int argc, char* argv[])
     {
 		fprintf(stderr, "Usage: ./madtest mp3file\n");
     }       
-        
+
+    /* Free Resources */
     free(decode_thread_data_p);
     for (i = 0; i < number_of_songs; i++ ) {
 		free(songs[i]);
@@ -114,6 +122,9 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+/**
+* Catch and defuse Control-C
+*/
 void catch_control_c(int sig) {
 	printf("Press q to quit!!\n");	
 }
