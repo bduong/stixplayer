@@ -58,7 +58,7 @@ public class GetPlaylistThread extends Thread{
                             new int[] {0xFF449def,0xFF2f6699});
                     gd.setCornerRadius(4f);
                     Button button = new Button(activity);
-                    button.setText(message);
+                    button.setText(message.replace(".mp3", ""));
                     button.setBackgroundDrawable(gd);
                     button.setMinimumHeight(50);
                     button.setPadding(10,10,10,10);
