@@ -18,19 +18,19 @@ To build the Android Application:
 The first option is to load the android project into a Java IDE
 capable of deploying to android devices
 
-'''bash
+```bash
 cd android/playerControl
 ant release
 adb install bin/playerControl-release-unsigned.apk
-'''
+```
 
 Running the Application
 =======================
 
 To run the C application once on the gumstix
 
-'''bash
+```bash
 ./player <path to mp3 folder>
-'''
+```
 
 To run the Android application, simply start it on your device
